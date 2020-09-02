@@ -6,6 +6,8 @@ services:
             context: .
         volumes:
             - ./src:/var/www/html
+        links:
+            - db:mysql.local
         ports:
             - 9000:80
         entrypoint: ["apache2ctl", "-D", "FOREGROUND"]
