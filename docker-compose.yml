@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+    web:
+        build:
+            context: .
+        volumes:
+            - ./src:/var/www/html
+        ports:
+            - 9000:80
+        entrypoint: ["apache2ctl", "-D", "FOREGROUND"]
+
+    db:
+        image: mysql:8.0
+        restart: always
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_ROOT_PASSWORD: 'password'
+        ports:
+            - 3306:3306
+        volumes:
+            - ./.system/mysql.d:/var/lib/mysql
