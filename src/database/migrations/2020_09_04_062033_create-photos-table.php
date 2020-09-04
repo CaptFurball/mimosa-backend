@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStoryAttachmentTable extends Migration
+class CreatePhotosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateStoryAttachmentTable extends Migration
      */
     public function up()
     {
-        Schema::create('story_attachment', function (Blueprint $table) {
+        Schema::create('photos', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('story_id')->onDelete('cascade');
-            $table->foreignId('attachment_id')->onDelete('cascade');
+            $table->foreignId('user_id')->onDelete('cascade');
+            $table->foreignId('post_id')->onDelete('cascade');
+            $table->string('name', 255);
+            $table->string('path', 255);
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ class CreateStoryAttachmentTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('story_attachment');
+        Schema::dropIfExists('photos');
     }
 }
