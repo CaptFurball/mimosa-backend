@@ -51,4 +51,14 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Photo');
     }
+
+    public function following()
+    {
+        return $this->hasMany('App\Follower');
+    }
+
+    public function followers()
+    {
+        return $this->hasMany('App\Follower', 'following');
+    }
 }
