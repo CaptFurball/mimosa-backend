@@ -3,41 +3,37 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Responses\GenericResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function list()
+    public function list(GenericResponse $response)
     {
         /** @var \App\Models\User */
         $user = Auth::user();
 
-        return response()->json([
-            'status' => 'SUCCESS',
-            'code' => 'USER_STORY_RETRIEVED',
-            'message' => [
-                'stories' => $user
-                    ->stories()
-                    ->orderBy('created_at', 'DESC')
-                    ->get(),
-            ]
+        $stories = $user
+            ->stories()
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        return $response->createSuccessResponse('USER_STORY_RETRIEVED', [
+            'stories' => $stories
         ]);
     }
 
-    public function status(Request $request)
+    public function status(Request $request, GenericResponse $response)
     {
         $validator = Validator::make($request->all(), [
             'body' => 'required|string|max:1000'
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'REJECTED',
-                'code' => 'MALFORMED_REQUEST',
-                'errors' => $validator->errors()->messages()
-            ]);
+            return $response->createMalformedRequestResponse($validator->errors()->messages());
         }
 
         /** @var \App\Models\User */
@@ -46,11 +42,8 @@ class PostController extends Controller
         $user->stories()->create([
             'body' => $request->body
         ]);
-        
-        return response()->json([
-            'status' => 'SUCCESS',
-            'code' => 'STORY_POSTED'
-        ]);
+
+        return $response->createSuccessResponse('STORY_POSTED');
     }
     
     public function photo(Request $request)
@@ -63,18 +56,14 @@ class PostController extends Controller
 
     }
 
-    public function delete($id)
+    public function delete(GenericResponse $response, $id)
     {
         $validator = Validator::make(['id' => $id], [
             'id' => 'required|integer|exists:stories'
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 'REJECTED',
-                'code' => 'MALFORMED_REQUEST',
-                'errors' => $validator->errors()->messages()
-            ]);
+            return $response->createMalformedRequestResponse($validator->errors()->messages());
         }
 
         /** @var \App\Models\User */
@@ -82,18 +71,12 @@ class PostController extends Controller
 
         try {
             $story = $user->stories()->findOrFail($id);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'REJECTED',
-                'code' => 'NOT_OWNER_OF_RESOURCE',
-            ]);
-        }
+        } catch (ModelNotFoundException $e) {
+            return $response->createRejectedResponse('NOT_STORY_OWNER');
+        } 
 
         $story->delete();
 
-        return response()->json([
-            'status' => 'SUCCESS',
-            'code' => 'STORY_POST_DELETED'
-        ]);
+        return $response->createSuccessResponse('STORY_DELETED');
     }
 }

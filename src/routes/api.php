@@ -24,8 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/post/status', 'User\PostController@status');
     Route::delete('/user/post/delete/{id}', 'User\PostController@delete');
 
-    Route::post('user/follow/{id}', 'User\FollowerController@add');
-    Route::delete('user/unfollow/{id}', 'User\FollowerController@remove');
+    Route::post('user/follow/{id}', 'User\FollowerController@follow');
+    Route::delete('user/unfollow/{id}', 'User\FollowerController@unfollow');
 
     Route::post('story/comment', 'Story\InteractionController@addComment');
     Route::delete('story/comment/delete/{id}', 'Story\InteractionController@removeComment');
