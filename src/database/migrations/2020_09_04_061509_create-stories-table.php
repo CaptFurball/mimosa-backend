@@ -17,6 +17,7 @@ class CreateStoriesTable extends Migration
             $table->bigIncrements('id');
             $table->foreignId('user_id')->onDelete('cascade');
             $table->longText('body');
+            $table->text('tags')->nullable();
             $table->timestamps();
         });
     }
