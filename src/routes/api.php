@@ -18,3 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return Auth::user();
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user/story', 'User\StoryController@list');
+    Route::post('/user/story/status', 'User\StoryController@postStatus');
+    Route::delete('/user/story/delete/{id}', 'User\StoryController@delete');
+});
