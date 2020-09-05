@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
-class StoryController extends Controller
+class PostController extends Controller
 {
     public function list()
     {
@@ -26,7 +26,7 @@ class StoryController extends Controller
         ]);
     }
 
-    public function postStatus(Request $request)
+    public function status(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'body' => 'required|string|max:1000'
@@ -53,12 +53,12 @@ class StoryController extends Controller
         ]);
     }
     
-    public function postPhoto(Request $request)
+    public function photo(Request $request)
     {
         
     }
     
-    public function postVideo(Request $request)
+    public function video(Request $request)
     {
 
     }

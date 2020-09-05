@@ -20,9 +20,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user/story', 'User\StoryController@list');
-    Route::post('/user/story/status', 'User\StoryController@postStatus');
-    Route::delete('/user/story/delete/{id}', 'User\StoryController@delete');
+    Route::get('/user/story', 'User\PostController@list');
+    Route::post('/user/post/status', 'User\PostController@status');
+    Route::delete('/user/post/delete/{id}', 'User\PostController@delete');
 
     Route::post('user/follow/{id}', 'User\FollowerController@add');
     Route::delete('user/unfollow/{id}', 'User\FollowerController@remove');
