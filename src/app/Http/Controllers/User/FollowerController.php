@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Responses\GenericResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class FollowerController extends Controller
 {
