@@ -17,7 +17,9 @@ class CreateLikesTable extends Migration
             $table->bigIncrements('id');
             $table->morphs('likeable');
             $table->foreignId('user_id')->onDelete('cascade');
-            $table->longText('body');
+            $table->timestamps();
+
+            $table->unique(['user_id', 'likeable_type', 'likeable_id']);
         });
     }
 

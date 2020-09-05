@@ -23,7 +23,7 @@ class CreateFollowersTable extends Migration
 
             $table->timestamps();
             
-            $table->unique('user_id', 'following');
+            $table->unique(['user_id', 'following']);
         });
     }
 
