@@ -23,14 +23,16 @@ class PostController extends Controller
     public function status(Request $request, GenericResponse $response)
     {
         $this->validate($request->all(), [
-            'body' => 'required|string|max:1000'
+            'body' => 'required|string|max:1000',
+            'tags' => 'string|max:1000'
         ]);
 
         /** @var \App\Models\User */
         $user = Auth::user();
 
         $user->stories()->create([
-            'body' => $request->body
+            'body' => $request->body,
+            'tags' => $request->has('tags')? $request->tags: null
         ]);
 
         return $response->createSuccessResponse('STORY_POSTED');
