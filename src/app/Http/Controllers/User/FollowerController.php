@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Validator;
 
 class FollowerController extends Controller
 {
-    public function follow(GenericResponse $response, $id)
+    public function follow(GenericResponse $response, $userId)
     {
-        $validator = Validator::make(['id' => $id], [
+        $validator = Validator::make(['id' => $userId], [
             'id' => 'required|integer|exists:users'
         ]);
 
@@ -24,7 +24,7 @@ class FollowerController extends Controller
         $user = Auth::user();
 
         try {
-            $user->following()->create(['following' => $id]);
+            $user->following()->create(['following' => $userId]);
         } catch (\Exception $e) {
             // Error code 23000: row constraint error
             if ($e->getCode() == 23000) {
@@ -37,9 +37,9 @@ class FollowerController extends Controller
         return $response->createSuccessResponse('USER_FOLLOWED');
     }
 
-    public function unfollow(GenericResponse $response, $id)
+    public function unfollow(GenericResponse $response, $userId)
     {
-        $validator = Validator::make(['id' => $id], [
+        $validator = Validator::make(['id' => $userId], [
             'id' => 'required|integer|exists:users'
         ]);
 
@@ -51,7 +51,7 @@ class FollowerController extends Controller
         $user = Auth::user();
 
         try {
-            $following = $user->following()->where('following', $id)->firstOrFail();
+            $following = $user->following()->where('following', $userId)->firstOrFail();
         } catch (ModelNotFoundException $e) {
             return $response->createRejectedResponse('USER_WAS_NOT_FOLLOWED');
         }

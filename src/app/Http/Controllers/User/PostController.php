@@ -56,9 +56,9 @@ class PostController extends Controller
 
     }
 
-    public function delete(GenericResponse $response, $id)
+    public function delete(GenericResponse $response, $storyId)
     {
-        $validator = Validator::make(['id' => $id], [
+        $validator = Validator::make(['id' => $storyId], [
             'id' => 'required|integer|exists:stories'
         ]);
 
@@ -70,7 +70,7 @@ class PostController extends Controller
         $user = Auth::user();
 
         try {
-            $story = $user->stories()->findOrFail($id);
+            $story = $user->stories()->findOrFail($storyId);
         } catch (ModelNotFoundException $e) {
             return $response->createRejectedResponse('NOT_STORY_OWNER');
         } 

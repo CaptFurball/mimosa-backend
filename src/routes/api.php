@@ -22,11 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/story', 'User\PostController@list');
     Route::post('/user/post/status', 'User\PostController@status');
-    Route::delete('/user/post/delete/{id}', 'User\PostController@delete');
+    Route::delete('/user/post/delete/{storyId}', 'User\PostController@delete');
 
-    Route::post('user/follow/{id}', 'User\FollowerController@follow');
-    Route::delete('user/unfollow/{id}', 'User\FollowerController@unfollow');
+    Route::post('user/follow/{userId}', 'User\FollowerController@follow');
+    Route::delete('user/unfollow/{userId}', 'User\FollowerController@unfollow');
 
     Route::post('story/comment', 'Story\InteractionController@addComment');
-    Route::delete('story/comment/delete/{id}', 'Story\InteractionController@removeComment');
+    Route::delete('story/comment/delete/{commentId}', 'Story\InteractionController@removeComment');
 });
