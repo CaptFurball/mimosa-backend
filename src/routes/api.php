@@ -29,4 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('story/comment', 'Story\InteractionController@addComment');
     Route::delete('story/comment/delete/{commentId}', 'Story\InteractionController@removeComment');
+
+    Route::post('story/like/{storyId}', 'Story\InteractionController@addLike');
+    Route::delete('story/unlike/{storyId}', 'Story\InteractionController@removeLike');
 });
