@@ -15,13 +15,8 @@ class PostController extends Controller
         /** @var \App\Models\User */
         $user = Auth::user();
 
-        $stories = $user
-            ->stories()
-            ->orderBy('created_at', 'DESC')
-            ->get();
-
         return $response->createSuccessResponse('USER_STORY_RETRIEVED', [
-            'stories' => $stories
+            'stories' => $user->stories
         ]);
     }
 

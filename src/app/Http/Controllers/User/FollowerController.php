@@ -12,7 +12,7 @@ class FollowerController extends Controller
     public function follow(GenericResponse $response, $userId)
     {
         $this->validate(['id' => $userId], [
-            'id' => 'required|integer|exists:users'
+            'id' => 'required|integer|exists:users|not_in:' . Auth::user()->id
         ]);
 
         /** @var \App\Models\User */
