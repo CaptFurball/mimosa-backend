@@ -19,6 +19,7 @@ class LoginController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
+                'status' => 'REJECTED',
                 'code' => 'MALFORMED_REQUEST',
                 'errors' => $validator->errors()->messages()
             ]);
@@ -28,6 +29,7 @@ class LoginController extends Controller
 
         if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
             return response()->json([
+                'status' => 'SUCCESS',
                 'code' => 'USER_LOGGED_IN',
                 'message' => [
                     'user' => $user
@@ -35,6 +37,7 @@ class LoginController extends Controller
             ]);
         } else {
             return response()->json([
+                'status' => 'NOT_FOUND',
                 'code' => 'INVALID_CREDENTIALS'
             ]);
         }

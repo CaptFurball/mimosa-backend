@@ -21,6 +21,7 @@ class RegisterController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
+                'status' => 'REJECTED',
                 'code' => 'MALFORMED_REQUEST',
                 'errors' => $validator->errors()->messages()
             ]);
@@ -32,9 +33,8 @@ class RegisterController extends Controller
             'password' => Hash::make($request->password, ['rounds' => 12])
         ]);
       
-        event(new Registered($user));
-
         return response()->json([
+            'status' => 'SUCCESS',
             'code' => 'USER_CREATED',
             'message' => [
                 'user' => $user
