@@ -14,14 +14,10 @@ class InteractionController extends Controller
 {
     public function addComment(Request $request, GenericResponse $response)
     {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request->all(), [
             'story_id' => 'required|integer|exists:stories,id',
             'body' => 'required|string|max:1000'
         ]);
-
-        if ($validator->fails()) {
-            return $response->createMalformedRequestResponse($validator->errors()->messages());
-        }
 
         $story = Story::findOrFail($request->story_id);
         $story->comments()->create([
@@ -34,13 +30,9 @@ class InteractionController extends Controller
 
     public function removeComment(GenericResponse $response, $commentId)
     {
-        $validator = Validator::make(['id' => $commentId], [
+        $this->validate(['id' => $commentId], [
             'id' => 'required|integer|exists:comments',
         ]);
-
-        if ($validator->fails()) {
-            return $response->createMalformedRequestResponse($validator->errors()->messages());
-        }
 
         /** @var \App\Models\User */
         $user = Auth::user();
@@ -58,13 +50,9 @@ class InteractionController extends Controller
 
     public function addLike(GenericResponse $response, $storyId)
     {
-        $validator = Validator::make(['id' => $storyId], [
+        $this->validate(['id' => $storyId], [
             'id' => 'required|integer|exists:stories'
         ]);
-
-        if ($validator->fails()) {
-            return $response->createMalformedRequestResponse($validator->errors()->messages());
-        }
 
         Story::find($storyId)->likes()->create([
             'user_id' => Auth::user()->id
@@ -75,13 +63,9 @@ class InteractionController extends Controller
 
     public function removeLike(GenericResponse $response, $storyId)
     {
-        $validator = Validator::make(['id' => $storyId], [
+        $this->validate(['id' => $storyId], [
             'id' => 'required|integer|exists:stories'
         ]);
-
-        if ($validator->fails()) {
-            return $response->createMalformedRequestResponse($validator->errors()->messages());
-        }
 
         $story = Story::find($storyId);
 

@@ -12,13 +12,9 @@ class FollowerController extends Controller
 {
     public function follow(GenericResponse $response, $userId)
     {
-        $validator = Validator::make(['id' => $userId], [
+        $this->validate(['id' => $userId], [
             'id' => 'required|integer|exists:users'
         ]);
-
-        if ($validator->fails()) {
-            return $response->createMalformedRequestResponse($validator->errors()->messages());
-        }
 
         /** @var \App\Models\User */
         $user = Auth::user();
@@ -39,13 +35,9 @@ class FollowerController extends Controller
 
     public function unfollow(GenericResponse $response, $userId)
     {
-        $validator = Validator::make(['id' => $userId], [
+        $this->validate(['id' => $userId], [
             'id' => 'required|integer|exists:users'
         ]);
-
-        if ($validator->fails()) {
-            return $response->createMalformedRequestResponse($validator->errors()->messages());
-        }
 
         /** @var \App\Models\User */
         $user = Auth::user();
@@ -58,9 +50,6 @@ class FollowerController extends Controller
 
         $following->delete();
 
-        return response()->json([
-            'status' => 'SUCCESS',
-            'code' => 'USER_UNFOLLOWED'
-        ]);
+        return $response->createSuccessResponse('USER_UNFOLLOWED');
     }
 }

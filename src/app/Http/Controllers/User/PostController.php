@@ -28,13 +28,9 @@ class PostController extends Controller
 
     public function status(Request $request, GenericResponse $response)
     {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request->all(), [
             'body' => 'required|string|max:1000'
         ]);
-
-        if ($validator->fails()) {
-            return $response->createMalformedRequestResponse($validator->errors()->messages());
-        }
 
         /** @var \App\Models\User */
         $user = Auth::user();
@@ -58,13 +54,9 @@ class PostController extends Controller
 
     public function delete(GenericResponse $response, $storyId)
     {
-        $validator = Validator::make(['id' => $storyId], [
+        $this->validate(['id' => $storyId], [
             'id' => 'required|integer|exists:stories'
         ]);
-
-        if ($validator->fails()) {
-            return $response->createMalformedRequestResponse($validator->errors()->messages());
-        }
 
         /** @var \App\Models\User */
         $user = Auth::user();
