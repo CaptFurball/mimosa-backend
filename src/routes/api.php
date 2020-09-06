@@ -32,4 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('story/like/{storyId}', 'Story\InteractionController@addLike');
     Route::delete('story/unlike/{storyId}', 'Story\InteractionController@removeLike');
+
+    Route::get('/story', 'Story\FeedController@getFeed');
+    Route::get('/story/tag/{tag}', 'Story\FeedController@getFeedByTag');
 });
