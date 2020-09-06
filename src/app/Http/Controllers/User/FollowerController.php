@@ -11,9 +11,11 @@ class FollowerController extends Controller
 {
     public function follow(GenericResponse $response, $userId)
     {
-        $this->validate(['id' => $userId], [
+        if (!$this->validate(['id' => $userId], [
             'id' => 'required|integer|exists:users|not_in:' . Auth::user()->id
-        ]);
+        ])) {
+            return $this->failedValidationResponse;
+        }
 
         /** @var \App\Models\User */
         $user = Auth::user();
@@ -34,9 +36,11 @@ class FollowerController extends Controller
 
     public function unfollow(GenericResponse $response, $userId)
     {
-        $this->validate(['id' => $userId], [
+        if (!$this->validate(['id' => $userId], [
             'id' => 'required|integer|exists:users'
-        ]);
+        ])) {
+            return $this->failedValidationResponse;
+        }
 
         /** @var \App\Models\User */
         $user = Auth::user();

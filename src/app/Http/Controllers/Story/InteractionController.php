@@ -13,10 +13,12 @@ class InteractionController extends Controller
 {
     public function addComment(Request $request, GenericResponse $response)
     {
-        $this->validate($request->all(), [
+        if (!$this->validate($request->all(), [
             'story_id' => 'required|integer|exists:stories,id',
             'body' => 'required|string|max:1000'
-        ]);
+        ])) {
+            return $this->failedValidationResponse;
+        }
 
         $story = Story::findOrFail($request->story_id);
         $story->comments()->create([
@@ -29,9 +31,11 @@ class InteractionController extends Controller
 
     public function removeComment(GenericResponse $response, $commentId)
     {
-        $this->validate(['id' => $commentId], [
+        if (!$this->validate(['id' => $commentId], [
             'id' => 'required|integer|exists:comments',
-        ]);
+        ])) {
+            return $this->failedValidationResponse;
+        }
 
         /** @var \App\Models\User */
         $user = Auth::user();
@@ -49,9 +53,11 @@ class InteractionController extends Controller
 
     public function addLike(GenericResponse $response, $storyId)
     {
-        $this->validate(['id' => $storyId], [
+        if (!$this->validate(['id' => $storyId], [
             'id' => 'required|integer|exists:stories'
-        ]);
+        ])) {
+            return $this->failedValidationResponse;
+        }
 
         try {
             Story::find($storyId)->likes()->create([
@@ -71,9 +77,11 @@ class InteractionController extends Controller
 
     public function removeLike(GenericResponse $response, $storyId)
     {
-        $this->validate(['id' => $storyId], [
+        if (!$this->validate(['id' => $storyId], [
             'id' => 'required|integer|exists:stories'
-        ]);
+        ])) {
+            return $this->failedValidationResponse;
+        }
 
         $story = Story::find($storyId);
 

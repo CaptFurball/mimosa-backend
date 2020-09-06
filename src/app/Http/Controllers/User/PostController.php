@@ -23,10 +23,12 @@ class PostController extends Controller
 
     public function status(Request $request, GenericResponse $response)
     {
-        $this->validate($request->all(), [
+        if (!$this->validate($request->all(), [
             'body' => 'required|string|max:1000',
             'tags' => 'string|max:1000'
-        ]);
+        ])) {
+            return $this->failedValidationResponse;
+        }
 
         /** @var \App\Models\User */
         $user = Auth::user();
@@ -64,9 +66,11 @@ class PostController extends Controller
 
     public function delete(GenericResponse $response, $storyId)
     {
-        $this->validate(['id' => $storyId], [
+        if (!$this->validate(['id' => $storyId], [
             'id' => 'required|integer|exists:stories'
-        ]);
+        ])) {
+            return $this->failedValidationResponse;
+        }
 
         /** @var \App\Models\User */
         $user = Auth::user();

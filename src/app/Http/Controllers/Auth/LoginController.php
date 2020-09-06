@@ -11,13 +11,15 @@ class LoginController extends Controller
 {
     public function login(Request $request, GenericResponse $response)
     {
-        $this->validate($request->all(), [
+        if (!$this->validate($request->all(), [
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8'
-        ]);
+        ])) {
+            return $this->failedValidationResponse;
+        };
 
         if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
-            return $response->createSuccessResponse('USER_LOGGED_IN');
+            return $response->createSuccessResponse('USER_LOGGED_IN', ['user' => Auth::user()]);
         } else {
             return $response->createRejectedResponse('INVALID_CREDENTIALS');
         }
