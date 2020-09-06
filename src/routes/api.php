@@ -20,10 +20,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user/story', 'User\StoryController@list');
-    Route::post('/user/story/status', 'User\StoryController@postStatus');
-    Route::delete('/user/story/delete/{id}', 'User\StoryController@delete');
+    Route::get('/user/story', 'User\PostController@list');
+    Route::post('/user/post/status', 'User\PostController@status');
+    Route::delete('/user/post/delete/{storyId}', 'User\PostController@delete');
 
-    Route::post('user/follow/{id}', 'User\FollowerController@add');
-    Route::delete('user/unfollow/{id}', 'User\FollowerController@remove');
+    Route::post('user/follow/{userId}', 'User\FollowerController@follow');
+    Route::delete('user/unfollow/{userId}', 'User\FollowerController@unfollow');
+
+    Route::post('story/comment', 'Story\InteractionController@addComment');
+    Route::delete('story/comment/delete/{commentId}', 'Story\InteractionController@removeComment');
+
+    Route::post('story/like/{storyId}', 'Story\InteractionController@addLike');
+    Route::delete('story/unlike/{storyId}', 'Story\InteractionController@removeLike');
+
+    Route::get('/story', 'Story\FeedController@getFeed');
+    Route::get('/story/tag/{tag}', 'Story\FeedController@getFeedByTag');
 });

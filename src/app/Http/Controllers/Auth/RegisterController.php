@@ -3,42 +3,27 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Auth\Events\Registered;
+use App\Responses\GenericResponse;
 use App\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
-    public function register(Request $request)
+    public function register(Request $request, GenericResponse $response)
     {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed'
-        ]); 
+        ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'REJECTED',
-                'code' => 'MALFORMED_REQUEST',
-                'errors' => $validator->errors()->messages()
-            ]);
-        }
-
-        $user = User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password, ['rounds' => 12])
         ]);
       
-        return response()->json([
-            'status' => 'SUCCESS',
-            'code' => 'USER_CREATED',
-            'message' => [
-                'user' => $user
-            ]
-        ]);
+        return $response->createSuccessResponse('USER_CREATED');
     }
 }

@@ -3,52 +3,30 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Responses\GenericResponse;
 
 class LoginController extends Controller
 {
-    public function login(Request $request)
+    public function login(Request $request, GenericResponse $response)
     {
-        $validator = Validator::make($request->all(), [
+        $this->validate($request->all(), [
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8'
-        ]); 
-
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 'REJECTED',
-                'code' => 'MALFORMED_REQUEST',
-                'errors' => $validator->errors()->messages()
-            ]);
-        }
-
-        $user = User::where('email', $request->email)->first();
+        ]);
 
         if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
-            return response()->json([
-                'status' => 'SUCCESS',
-                'code' => 'USER_LOGGED_IN',
-                'message' => [
-                    'user' => $user
-                ]
-            ]);
+            return $response->createSuccessResponse('USER_LOGGED_IN');
         } else {
-            return response()->json([
-                'status' => 'NOT_FOUND',
-                'code' => 'INVALID_CREDENTIALS'
-            ]);
+            return $response->createRejectedResponse('INVALID_CREDENTIALS');
         }
     }
 
-    public function logout()
+    public function logout(GenericResponse $response)
     {
         Auth::logout(); 
 
-        return response()->json([
-            'code' => 'USER_LOGGED_OUT'
-        ]);
+        return $response->createSuccessResponse('USER_LOGGED_OUT');
     }
 }
