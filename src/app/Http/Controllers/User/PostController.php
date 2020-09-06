@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Tag;
 use App\Http\Controllers\Controller;
 use App\Responses\GenericResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -30,10 +31,23 @@ class PostController extends Controller
         /** @var \App\Models\User */
         $user = Auth::user();
 
-        $user->stories()->create([
-            'body' => $request->body,
-            'tags' => $request->has('tags')? $request->tags: null
+        $story = $user->stories()->create([
+            'body' => $request->body
         ]);
+
+        if ($request->has('tags')) {
+            $tags = explode(',', $request->tags);
+
+            foreach ($tags as $tag) {
+                try {
+                    $existingTag = Tag::where('name', $tag)->firstOrFail();
+                } catch (ModelNotFoundException $e) {
+                    $existingTag = Tag::create(['name' => $tag]);
+                }
+
+                $story->tags()->attach($existingTag->id);
+            }
+        }
 
         return $response->createSuccessResponse('STORY_POSTED');
     }

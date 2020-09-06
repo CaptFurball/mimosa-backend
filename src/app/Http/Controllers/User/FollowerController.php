@@ -22,7 +22,7 @@ class FollowerController extends Controller
             $user->following()->create(['following' => $userId]);
         } catch (\Exception $e) {
             // Error code 23000: row constraint error
-            if ($e->getCode() == 23000) {
+            if ($e->getCode() === 23000) {
                 return $response->createRejectedResponse('ALREADY_FOLLOWED');
             } else {
                 return $response->createErrorResponse('DATABASE_ERROR');

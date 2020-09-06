@@ -53,9 +53,18 @@ class InteractionController extends Controller
             'id' => 'required|integer|exists:stories'
         ]);
 
-        Story::find($storyId)->likes()->create([
-            'user_id' => Auth::user()->id
-        ]);
+        try {
+            Story::find($storyId)->likes()->create([
+                'user_id' => Auth::user()->id
+            ]);
+        } catch (\Exception $e) {
+             // Error code 23000: row constraint error
+             if ($e->getCode() === 23000) {
+                return $response->createRejectedResponse('ALREADY_LIKED');
+            } else {
+                return $response->createErrorResponse('DATABASE_ERROR');
+            }
+        }
 
         return $response->createSuccessResponse('LIKED');
     }

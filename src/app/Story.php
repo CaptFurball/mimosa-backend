@@ -9,7 +9,7 @@ class Story extends Model
     protected $table = 'stories';
 
     protected $fillable = [
-        'user_id', 'body', 'tags',
+        'body',
     ];
 
     public function users()
@@ -35,5 +35,10 @@ class Story extends Model
     public function likes()
     {
         return $this->morphMany('App\Like', 'likeable');
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany('App\Tag');
     }
 }
