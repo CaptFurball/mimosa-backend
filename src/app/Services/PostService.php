@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Story;
 use App\Tag;
 use App\Services\LinkInfoService;
+use Illuminate\Http\UploadedFile;
 
 class PostService 
 {
@@ -36,7 +37,7 @@ class PostService
         return $story;
     }
 
-    public function postLink(string $body, string $url, string $tag = '')
+    public function postLink(string $body, string $url, string $tag = ''): Story
     {
         $story = $this->post($body, $tag);
 
@@ -54,6 +55,24 @@ class PostService
             'image_url' => $linkInfoService->imageUrl?: null
         ]);
 
+        return $story;
+    }
+
+    public function postPhoto(string $body, UploadedFile $photo, string $tag = ''): Story
+    {
+        $story = $this->post($body, $tag);
+
+        $extension = $photo->getClientOriginalExtension(); 
+        $filename  = time() . '.' . $extension;
+        $directory = 'photo/';
+
+        $photo->storeAs($directory, $filename, 'public');
+
+        $story->photo()->create([
+            'user_id' => Auth::user()->id,
+            'path' => $directory . $filename
+        ]);
+        
         return $story;
     }
 }

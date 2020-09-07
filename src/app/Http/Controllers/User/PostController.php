@@ -36,9 +36,19 @@ class PostController extends Controller
         return $response->createSuccessResponse('STORY_POSTED');
     }
     
-    public function photo(Request $request)
+    public function photo(Request $request, PostService $postService, GenericResponse $response)
     {
-        
+        if (!$this->validate($request->all(), [
+            'body' => 'required|string|max:1000',
+            'photo' => 'required|image|max:1024',
+            'tags' => 'string|max:1000'
+        ])) {
+            return $this->failedValidationResponse;
+        }
+
+        $postService->postPhoto($request->body, $request->file('photo'), $request->has('tags')? $request->tags: '');
+
+        return $response->createSuccessResponse('STORY_POSTED');
     }
     
     public function video(Request $request)
