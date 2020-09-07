@@ -27,6 +27,11 @@ class Story extends Model
         return $this->hasOne('App\Photo');
     }
 
+    public function link()
+    {
+        return $this->hasOne('App\Link');
+    }
+
     public function comments()
     {
         return $this->morphMany('App\Comment', 'commentable');

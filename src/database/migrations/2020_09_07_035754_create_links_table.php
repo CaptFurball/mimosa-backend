@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePhotosTable extends Migration
+class CreateLinksTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,15 @@ class CreatePhotosTable extends Migration
      */
     public function up()
     {
-        Schema::create('photos', function (Blueprint $table) {
+        Schema::create('links', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('user_id')->onDelete('cascade');
             $table->foreignId('story_id')->onDelete('cascade');
-            $table->string('name', 255);
-            $table->string('path', 255);
+            $table->string('url', 255);
+            $table->string('host', 255);
+            $table->string('title', 255)->nullable();
+            $table->text('description')->nullable();
+            $table->string('image_url', 255)->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +33,6 @@ class CreatePhotosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('photos');
+        Schema::dropIfExists('links');
     }
 }
