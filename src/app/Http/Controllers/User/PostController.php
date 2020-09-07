@@ -8,6 +8,7 @@ use App\Responses\GenericResponse;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Services\PostService;
 
 class PostController extends Controller
 {
@@ -21,7 +22,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function status(Request $request, GenericResponse $response)
+    public function status(Request $request, PostService $postService, GenericResponse $response)
     {
         if (!$this->validate($request->all(), [
             'body' => 'required|string|max:1000',
@@ -30,26 +31,7 @@ class PostController extends Controller
             return $this->failedValidationResponse;
         }
 
-        /** @var \App\Models\User */
-        $user = Auth::user();
-
-        $story = $user->stories()->create([
-            'body' => $request->body
-        ]);
-
-        if ($request->has('tags')) {
-            $tags = explode(',', $request->tags);
-
-            foreach ($tags as $tag) {
-                try {
-                    $existingTag = Tag::where('name', $tag)->firstOrFail();
-                } catch (ModelNotFoundException $e) {
-                    $existingTag = Tag::create(['name' => $tag]);
-                }
-
-                $story->tags()->attach($existingTag->id);
-            }
-        }
+        $postService->post($request->body, $request->has('tags')? $request->tags: '');
 
         return $response->createSuccessResponse('STORY_POSTED');
     }
@@ -62,6 +44,21 @@ class PostController extends Controller
     public function video(Request $request)
     {
 
+    }
+
+    public function link(Request $request, PostService $postService, GenericResponse $response)
+    {
+        if (!$this->validate($request->all(), [
+            'body' => 'required|string|max:1000',
+            'tags' => 'string|max:1000',
+            'url'  => 'required|string|max:255'
+        ])) {
+            return $this->failedValidationResponse;
+        }
+
+        $postService->postLink($request->body, $request->url, $request->has('tags')? $request->tags: '');
+
+        return $response->createSuccessResponse('STORY_POSTED');
     }
 
     public function delete(GenericResponse $response, $storyId)

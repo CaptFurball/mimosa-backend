@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/story', 'User\PostController@list');
     Route::post('/user/post/status', 'User\PostController@status');
+    Route::post('/user/post/link', 'User\PostController@link');
     Route::delete('/user/post/delete/{storyId}', 'User\PostController@delete');
 
     Route::post('user/follow/{userId}', 'User\FollowerController@follow');

@@ -40,7 +40,7 @@ class FeedService
      */
     public function getRandomFeed(): array
     {
-        return Story::with(['tags', 'likes', 'comments.user'])
+        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video'])
             ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-3 days')))
             ->orderBy('created_at', 'DESC')
             ->get()
@@ -57,7 +57,7 @@ class FeedService
      */
     public function getFeedByTag(string $tag): array
     {
-        return Story::with(['tags', 'likes', 'comments'])
+        return Story::with(['tags', 'likes', 'comments', 'link', 'photo', 'video'])
             ->whereHas('tags', function($query) use ($tag) {
                 $query->where('name', $tag);
             })
@@ -78,7 +78,7 @@ class FeedService
 
         return $user->following()
             ->with(['followingUser.stories' => function($query) {
-                $query->with(['tags', 'likes', 'comments'])
+                $query->with(['tags', 'likes', 'comments', 'link', 'photo', 'video'])
                 ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-3 days')));
             }])
             ->get()
@@ -99,7 +99,7 @@ class FeedService
     protected function getSecondLayerFeed(array $tags, array $excludeId): array
     {
         //TODO: figure out how to search by tag
-        return Story::with(['tags', 'likes', 'comments'])
+        return Story::with(['tags', 'likes', 'comments', 'link', 'photo', 'video'])
             ->whereHas('tags', function($query) use ($tags) {
                 $query->whereIn('name', $tags);
             })
