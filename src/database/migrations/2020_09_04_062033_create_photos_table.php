@@ -17,7 +17,6 @@ class CreatePhotosTable extends Migration
             $table->bigIncrements('id');
             $table->foreignId('user_id')->onDelete('cascade');
             $table->foreignId('story_id')->onDelete('cascade');
-            $table->string('name', 255);
             $table->string('path', 255);
             $table->timestamps();
         });
