@@ -6,6 +6,7 @@ use Goutte\Client;
 
 class LinkInfoService
 {
+    public $url;
     public $title;
     public $description;
     public $imageUrl;
@@ -14,6 +15,8 @@ class LinkInfoService
 
     public function get($url)
     {
+        $this->url = $url;
+
         if(!empty($url)) {
             $client = new Client;
             $this->crawler = $client->request('GET', $url);
@@ -37,7 +40,11 @@ class LinkInfoService
         }
 
         if (empty($title)) {
-            $title = $this->crawler->filter('title')->text();
+            try {
+                $title = $this->crawler->filter('title')->text();
+            } catch (\Exception $e) {
+                return '';
+            }
         }
 
         return ucfirst($title)?: '';
@@ -72,6 +79,10 @@ class LinkInfoService
 
         if (empty($imageUrl)) {
             $imageUrl = $this->filterTag('@name="twitter:image:src"');
+        }
+
+        if (preg_match('/(\.png?|\.jpeg?|\.gif|\.jpg)/', $this->url)) {
+            $imageUrl = $this->url;
         }
 
         return $imageUrl;
