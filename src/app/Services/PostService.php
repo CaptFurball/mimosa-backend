@@ -75,4 +75,22 @@ class PostService
         
         return $story;
     }
+
+    public function postVideo(string $body, UploadedFile $photo, string $tags = ''): Story
+    {
+        $story = $this->post($body, $tags);
+
+        $extension = $photo->getClientOriginalExtension(); 
+        $filename  = time() . '.' . $extension;
+        $directory = 'video/';
+
+        $photo->storeAs($directory, $filename, 'public');
+
+        $story->video()->create([
+            'user_id' => Auth::user()->id,
+            'path' => $directory . $filename
+        ]);
+        
+        return $story;
+    }
 }
