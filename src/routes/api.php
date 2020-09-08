@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/post/status', 'User\PostController@status');
     Route::post('/user/post/link', 'User\PostController@link');
     Route::post('/user/post/photo', 'User\PostController@photo');
+    Route::post('/user/post/video', 'User\PostController@video');
     Route::delete('/user/post/delete/{storyId}', 'User\PostController@delete');
 
     Route::post('user/follow/{userId}', 'User\FollowerController@follow');
@@ -43,4 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/story', 'Story\FeedController@getFeed');
     Route::get('/story/tag/{tag}', 'Story\FeedController@getFeedByTag');
+    Route::get('/story/user/{userId}', 'Story\FeedController@getFeedByUserId');
+    Route::get('/story/popular', 'Story\FeedController@getPopularFeed');
+    Route::get('/story/discussed', 'Story\FeedController@getDiscussedFeed');
 });

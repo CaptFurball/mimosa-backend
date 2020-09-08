@@ -51,9 +51,34 @@ class PostController extends Controller
         return $response->createSuccessResponse('STORY_POSTED');
     }
     
-    public function video(Request $request)
+    public function video(Request $request, PostService $postService, GenericResponse $response)
     {
+        if (!$this->validate($request->all(), [
+            'body' => 'required|string|max:1000',
+            'video' => 'required|file|max:10240',
+            'tags' => 'string|max:1000'
+        ])) {
+            return $this->failedValidationResponse;
+        }
 
+        $allowedMimeType = [
+            'video/mp4',
+            'video/x-flv',
+            'video/3gpp',
+            'video/quicktime',
+            'video/x-msvideo',
+            'video/x-ms-wmv',
+        ];
+
+        $mimeType = $request->video->getMimeType();
+
+        if (!in_array($mimeType, $allowedMimeType)) {
+            return $response->createRejectedResponse('VIDEO_FORMAT_IS_NOT_SUPPORTED');
+        }
+
+        $postService->postVideo($request->body, $request->file('video'), $request->has('tags')? $request->tags: '');
+
+        return $response->createSuccessResponse('STORY_POSTED');
     }
 
     public function link(Request $request, PostService $postService, GenericResponse $response)

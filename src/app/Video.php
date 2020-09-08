@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Video extends Model
 {
     protected $fillable = [
-        'name', 'path',
+        'user_id', 'path',
     ];
 
     public function story()

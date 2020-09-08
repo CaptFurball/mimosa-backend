@@ -26,4 +26,29 @@ class FeedController extends Controller
 
         return $response->createSuccessResponse('RETRIEVED_FEED', ['stories' => $stories]);
     }
+
+    public function getFeedByUserId(FeedService $feedService, GenericResponse $response, $userId)
+    {
+        $this->validate(['id' => $userId], [
+            'id' => 'required|int|exists:users'
+        ]);
+
+        $stories = $feedService->getFeedByUserId($userId);
+
+        return $response->createSuccessResponse('RETRIEVED_FEED', ['stories' => $stories]);
+    }
+
+    public function getPopularFeed(FeedService $feedService, GenericResponse $response)
+    {
+        $stories = $feedService->getPopularFeed();
+
+        return $response->createSuccessResponse('RETRIEVED_FEED', ['stories' => $stories]);
+    }
+
+    public function getDiscussedFeed(FeedService $feedService, GenericResponse $response)
+    {
+        $stories = $feedService->getDiscussedFeed();
+
+        return $response->createSuccessResponse('RETRIEVED_FEED', ['stories' => $stories]);
+    }
 }
