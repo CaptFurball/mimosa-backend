@@ -15,8 +15,16 @@ class CreateStoryTagTable extends Migration
     {
         Schema::create('story_tag', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('story_id')->onDelete('cascade');
-            $table->foreignId('tag_id')->onDelete('cascade');
+            $table->foreignId('story_id')
+                ->references('id')
+                ->on('stories')
+                ->onDelete('cascade');
+                
+            $table->foreignId('tag_id')
+                ->references('id')
+                ->on('tags')
+                ->onDelete('cascade');
+
             $table->timestamps();
         });
     }

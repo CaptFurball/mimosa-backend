@@ -16,7 +16,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return Auth::user();
+    return response()->json([
+        'status' => 'SUCCESS',
+        'code' => 'USER_RETRIEVED',
+        'message' => [
+            'user' => Auth::user()
+        ]
+    ]);
 });
 
 Route::middleware('auth:sanctum')->group(function () {

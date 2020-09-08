@@ -15,7 +15,11 @@ class CreateStoriesTable extends Migration
     {
         Schema::create('stories', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('user_id')->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+                
             $table->longText('body');
             $table->timestamps();
         });
