@@ -44,4 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/story', 'Story\FeedController@getFeed');
     Route::get('/story/tag/{tag}', 'Story\FeedController@getFeedByTag');
+    Route::get('/story/user/{userId}', 'Story\FeedController@getFeedByUserId');
+    Route::get('/story/popular', 'Story\FeedController@getPopularFeed');
+    Route::get('/story/discussed', 'Story\FeedController@getDiscussedFeed');
 });

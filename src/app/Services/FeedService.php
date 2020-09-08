@@ -49,7 +49,7 @@ class FeedService
     }
 
     /**
-     * Get array by a single string tag
+     * Get feed by a single string tag
      * 
      * @param string $tag Tag name eg: 'ecommerce'
      * 
@@ -63,6 +63,54 @@ class FeedService
             })
             ->orderBy('created_at', 'DESC')
             ->get()
+            ->toArray();
+    }
+
+    /**
+     * Get array by a user id
+     * 
+     * @param int $userId ID of a user
+     * 
+     * @return array A list of stories
+     */
+    public function getFeedByUserId(int $userId): array
+    {
+        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
+            ->where('user_id', $userId)
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->toArray();
+    }
+
+    /**
+     * Get feed by the most liked
+     * 
+     * @return array A list of stories
+     */
+    public function getPopularFeed(): array
+    {
+        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->sortByDesc(function($story) {
+                return $story->likes->count();
+            })
+            ->toArray();
+    }
+
+    /**
+     * Get feed by the most commented
+     * 
+     * @return array A list of stories
+     */
+    public function getDiscussedFeed(): array
+    {
+        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->sortByDesc(function($story) {
+                return $story->comments->count();
+            })
             ->toArray();
     }
 
