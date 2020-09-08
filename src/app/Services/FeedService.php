@@ -30,7 +30,7 @@ class FeedService
             $stories = $this->getRandomFeed();
         }
 
-        return $stories;
+        return array_values($stories);
     }
 
     /**
@@ -40,12 +40,14 @@ class FeedService
      */
     public function getRandomFeed(): array
     {
-        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
+        $stories = Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
             ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-3 days')))
             ->orderBy('created_at', 'DESC')
             ->get()
             ->shuffle()
             ->toArray();
+
+        return array_values($stories);
     }
 
     /**
@@ -89,13 +91,15 @@ class FeedService
      */
     public function getPopularFeed(): array
     {
-        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
+        $stories = Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
             ->orderBy('created_at', 'DESC')
             ->get()
             ->sortByDesc(function($story) {
                 return $story->likes->count();
             })
             ->toArray();
+
+        return array_values($stories);
     }
 
     /**
@@ -105,13 +109,15 @@ class FeedService
      */
     public function getDiscussedFeed(): array
     {
-        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
+        $stories = Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
             ->orderBy('created_at', 'DESC')
             ->get()
             ->sortByDesc(function($story) {
                 return $story->comments->count();
             })
             ->toArray();
+
+        return array_values($stories);
     }
 
     /**
