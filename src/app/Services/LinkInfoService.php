@@ -85,7 +85,7 @@ class LinkInfoService
             $imageUrl = $this->url;
         }
 
-        return $imageUrl;
+        return $imageUrl?: '';
     }
 
     protected function filterTag(string $tag)

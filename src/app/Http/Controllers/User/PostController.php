@@ -86,7 +86,7 @@ class PostController extends Controller
         if (!$this->validate($request->all(), [
             'body' => 'required|string|max:1000',
             'tags' => 'string|max:1000',
-            'url'  => 'required|string|max:255'
+            'url'  => 'required|url|max:255'
         ])) {
             return $this->failedValidationResponse;
         }
