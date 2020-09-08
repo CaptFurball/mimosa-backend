@@ -15,8 +15,16 @@ class CreateLinksTable extends Migration
     {
         Schema::create('links', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('user_id')->onDelete('cascade');
-            $table->foreignId('story_id')->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+
+            $table->foreignId('story_id')
+                ->references('id')
+                ->on('stories')
+                ->onDelete('cascade');
+                
             $table->string('url', 255);
             $table->string('host', 255);
             $table->string('title', 255)->nullable();

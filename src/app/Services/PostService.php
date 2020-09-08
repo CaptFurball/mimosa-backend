@@ -11,7 +11,7 @@ use Illuminate\Http\UploadedFile;
 
 class PostService 
 {
-    public function post(string $body, string $tag = ''): Story
+    public function post(string $body, string $tags = ''): Story
     {
         /** @var \App\Models\User */
         $user = Auth::user();
@@ -37,9 +37,9 @@ class PostService
         return $story;
     }
 
-    public function postLink(string $body, string $url, string $tag = ''): Story
+    public function postLink(string $body, string $url, string $tags = ''): Story
     {
-        $story = $this->post($body, $tag);
+        $story = $this->post($body, $tags);
 
         $linkInfoService = new LinkInfoService;
         $linkInfoService->get($url);
@@ -58,9 +58,9 @@ class PostService
         return $story;
     }
 
-    public function postPhoto(string $body, UploadedFile $photo, string $tag = ''): Story
+    public function postPhoto(string $body, UploadedFile $photo, string $tags = ''): Story
     {
-        $story = $this->post($body, $tag);
+        $story = $this->post($body, $tags);
 
         $extension = $photo->getClientOriginalExtension(); 
         $filename  = time() . '.' . $extension;

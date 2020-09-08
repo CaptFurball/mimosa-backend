@@ -18,7 +18,7 @@ class FeedService
     public function getFeed(): array
     {
         $tags = $this->extractTagsFromCommentsAndLikes();
-        
+
         $firstLayerStories = $this->getFirstLayerFeed();
 
         $excludeStoryId = Collection::make($firstLayerStories)->pluck('id')->toArray();
@@ -40,7 +40,7 @@ class FeedService
      */
     public function getRandomFeed(): array
     {
-        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video'])
+        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
             ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-3 days')))
             ->orderBy('created_at', 'DESC')
             ->get()
@@ -57,7 +57,7 @@ class FeedService
      */
     public function getFeedByTag(string $tag): array
     {
-        return Story::with(['tags', 'likes', 'comments', 'link', 'photo', 'video'])
+        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
             ->whereHas('tags', function($query) use ($tag) {
                 $query->where('name', $tag);
             })
@@ -78,13 +78,13 @@ class FeedService
 
         return $user->following()
             ->with(['followingUser.stories' => function($query) {
-                $query->with(['tags', 'likes', 'comments', 'link', 'photo', 'video'])
-                ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-3 days')));
+                $query->with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
+                ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-3 days')))
+                ->orderBy('created_at', 'DESC');
             }])
             ->get()
             ->pluck('followingUser.stories')
             ->flatten(1)
-            ->shuffle()
             ->toArray();
     }
 
@@ -99,13 +99,13 @@ class FeedService
     protected function getSecondLayerFeed(array $tags, array $excludeId): array
     {
         //TODO: figure out how to search by tag
-        return Story::with(['tags', 'likes', 'comments', 'link', 'photo', 'video'])
+        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
             ->whereHas('tags', function($query) use ($tags) {
                 $query->whereIn('name', $tags);
             })
             ->whereNotIn('id', $excludeId)
+            ->orderBy('created_at', 'DESC')
             ->get()
-            ->shuffle()
             ->toArray();
     }
 

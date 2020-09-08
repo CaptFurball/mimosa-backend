@@ -15,8 +15,16 @@ class CreateVideosTable extends Migration
     {
         Schema::create('videos', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('user_id')->onDelete('cascade');
-            $table->foreignId('story_id')->onDelete('cascade');
+            $table->foreignId('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+
+            $table->foreignId('story_id')
+                ->references('id')
+                ->on('stories')
+                ->onDelete('cascade');
+
             $table->string('path', 255);
             $table->timestamps();
         });
