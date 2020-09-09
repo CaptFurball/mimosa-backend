@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,11 +17,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    $user = Auth::user();
+
     return response()->json([
         'status' => 'SUCCESS',
         'code' => 'USER_RETRIEVED',
         'message' => [
-            'user' => Auth::user()
+            'user' => User::with(['following', 'followers'])->find($user->id)
         ]
     ]);
 });
@@ -31,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/user/post/link', 'User\PostController@link');
     Route::post('/user/post/photo', 'User\PostController@photo');
     Route::post('/user/post/video', 'User\PostController@video');
+    Route::post('/user/post/share', 'User\PostController@share');
     Route::delete('/user/post/delete/{storyId}', 'User\PostController@delete');
 
     Route::post('user/follow/{userId}', 'User\FollowerController@follow');

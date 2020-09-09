@@ -93,4 +93,31 @@ class PostService
         
         return $story;
     }
+
+    public function sharePost(int $storyId)
+    {
+        $sharedStory = Story::with(['user', 'tags'])->find($storyId);
+
+        $body = Auth::user()->name . ' has shared a post from ' . $sharedStory->user->name;
+        $tags = '';
+
+        if ($sharedStory->tags && count($sharedStory->tags) > 0) {
+            foreach ($sharedStory->tags as $key => $tag) {
+                $tags .= $tag->name;
+                
+                if ($key + 1 < count($sharedStory->tags)) {
+                    $tags .= ',';
+                }
+            }
+        }
+
+        $story = $this->post($body, $tags);
+
+        $story->sharedStory()->create([
+            'user_id' => Auth::user()->id,
+            'shared_story_id' => $storyId
+        ]);
+
+        return $story;
+    }
 }

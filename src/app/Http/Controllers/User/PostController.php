@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Services\PostService;
+use phpDocumentor\Reflection\DocBlock\Tags\Generic;
 
 class PostController extends Controller
 {
@@ -26,12 +27,14 @@ class PostController extends Controller
     {
         if (!$this->validate($request->all(), [
             'body' => 'required|string|max:1000',
-            'tags' => 'string|max:1000'
+            'tags' => 'nullable|string|max:1000'
         ])) {
             return $this->failedValidationResponse;
         }
 
-        $postService->post($request->body, $request->has('tags')? $request->tags: '');
+        $postService->post(
+            $request->body, 
+            $request->has('tags') && !empty($request->tags)? $request->tags: '');
 
         return $response->createSuccessResponse('STORY_POSTED');
     }
@@ -41,12 +44,15 @@ class PostController extends Controller
         if (!$this->validate($request->all(), [
             'body' => 'required|string|max:1000',
             'photo' => 'required|image|max:1024',
-            'tags' => 'string|max:1000'
+            'tags' => 'nullable|string|max:1000'
         ])) {
             return $this->failedValidationResponse;
         }
 
-        $postService->postPhoto($request->body, $request->file('photo'), $request->has('tags')? $request->tags: '');
+        $postService->postPhoto(
+            $request->body, 
+            $request->file('photo'), 
+            $request->has('tags') && !empty($request->tags)? $request->tags: '');
 
         return $response->createSuccessResponse('STORY_POSTED');
     }
@@ -56,19 +62,12 @@ class PostController extends Controller
         if (!$this->validate($request->all(), [
             'body' => 'required|string|max:1000',
             'video' => 'required|file|max:10240',
-            'tags' => 'string|max:1000'
+            'tags' => 'nullable|string|max:1000'
         ])) {
             return $this->failedValidationResponse;
         }
 
-        $allowedMimeType = [
-            'video/mp4',
-            'video/x-flv',
-            'video/3gpp',
-            'video/quicktime',
-            'video/x-msvideo',
-            'video/x-ms-wmv',
-        ];
+        $allowedMimeType = ['video/mp4'];
 
         $mimeType = $request->video->getMimeType();
 
@@ -76,7 +75,10 @@ class PostController extends Controller
             return $response->createRejectedResponse('VIDEO_FORMAT_IS_NOT_SUPPORTED');
         }
 
-        $postService->postVideo($request->body, $request->file('video'), $request->has('tags')? $request->tags: '');
+        $postService->postVideo(
+            $request->body, 
+            $request->file('video'), 
+            $request->has('tags') && !empty($request->tags)? $request->tags: '');
 
         return $response->createSuccessResponse('STORY_POSTED');
     }
@@ -85,13 +87,29 @@ class PostController extends Controller
     {
         if (!$this->validate($request->all(), [
             'body' => 'required|string|max:1000',
-            'tags' => 'string|max:1000',
+            'tags' => 'nullable|string|max:1000',
             'url'  => 'required|url|max:255'
         ])) {
             return $this->failedValidationResponse;
         }
 
-        $postService->postLink($request->body, $request->url, $request->has('tags')? $request->tags: '');
+        $postService->postLink(
+            $request->body, 
+            $request->url, 
+            $request->has('tags') && !empty($request->tags)? $request->tags: '');
+
+        return $response->createSuccessResponse('STORY_POSTED');
+    }
+
+    public function share(Request $request, PostService $postService, GenericResponse $response)
+    {
+        if (!$this->validate($request->all(), [
+            'storyId'  => 'required|integer|exists:stories,id'
+        ])) {
+            return $this->failedValidationResponse;
+        }
+
+        $postService->sharePost($request->storyId);
 
         return $response->createSuccessResponse('STORY_POSTED');
     }
