@@ -32,6 +32,11 @@ class Story extends Model
         return $this->hasOne('App\Link');
     }
 
+    public function sharedStory()
+    {
+        return $this->hasOne('App\Share');
+    }
+
     public function comments()
     {
         return $this->morphMany('App\Comment', 'commentable');

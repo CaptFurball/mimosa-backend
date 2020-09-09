@@ -77,7 +77,7 @@ class FeedService
      */
     public function getFeedByUserId(int $userId): array
     {
-        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user'])
+        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user', 'sharedStory.story.user'])
             ->where('user_id', $userId)
             ->orderBy('created_at', 'DESC')
             ->get()

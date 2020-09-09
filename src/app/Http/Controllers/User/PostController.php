@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Services\PostService;
+use phpDocumentor\Reflection\DocBlock\Tags\Generic;
 
 class PostController extends Controller
 {
@@ -61,14 +62,7 @@ class PostController extends Controller
             return $this->failedValidationResponse;
         }
 
-        $allowedMimeType = [
-            'video/mp4',
-            'video/x-flv',
-            'video/3gpp',
-            'video/quicktime',
-            'video/x-msvideo',
-            'video/x-ms-wmv',
-        ];
+        $allowedMimeType = ['video/mp4'];
 
         $mimeType = $request->video->getMimeType();
 
@@ -92,6 +86,19 @@ class PostController extends Controller
         }
 
         $postService->postLink($request->body, $request->url, $request->has('tags')? $request->tags: '');
+
+        return $response->createSuccessResponse('STORY_POSTED');
+    }
+
+    public function share(Request $request, PostService $postService, GenericResponse $response)
+    {
+        if (!$this->validate($request->all(), [
+            'storyId'  => 'required|integer|exists:stories,id'
+        ])) {
+            return $this->failedValidationResponse;
+        }
+
+        $postService->sharePost($request->storyId);
 
         return $response->createSuccessResponse('STORY_POSTED');
     }
