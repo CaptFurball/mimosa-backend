@@ -8,6 +8,20 @@ use Illuminate\Support\Facades\Auth;
 
 class FeedService
 {
+    protected $relationships = [
+        'tags', 
+        'likes', 
+        'comments.user', 
+        'link', 
+        'photo', 
+        'video', 
+        'user', 
+        'sharedStory.story.user', 
+        'sharedStory.story.link', 
+        'sharedStory.story.photo', 
+        'sharedStory.story.video'
+    ];
+
     /**
      * Story feed can be broken down into several parts.
      * First layer:  Stories that was posted by followed users in last 3 days
@@ -40,7 +54,7 @@ class FeedService
      */
     public function getRandomFeed(): array
     {
-        $stories = Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user', 'sharedStory.story.user'])
+        $stories = Story::with($this->relationships)
             ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-3 days')))
             ->orderBy('created_at', 'DESC')
             ->get()
@@ -59,7 +73,7 @@ class FeedService
      */
     public function getFeedByTag(string $tag): array
     {
-        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user', 'sharedStory.story.user'])
+        return Story::with($this->relationships)
             ->whereHas('tags', function($query) use ($tag) {
                 $query->where('name', $tag);
             })
@@ -77,7 +91,7 @@ class FeedService
      */
     public function getFeedByUserId(int $userId): array
     {
-        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user', 'sharedStory.story.user'])
+        return Story::with($this->relationships)
             ->where('user_id', $userId)
             ->orderBy('created_at', 'DESC')
             ->get()
@@ -91,7 +105,7 @@ class FeedService
      */
     public function getPopularFeed(): array
     {
-        $stories = Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user', 'sharedStory.story.user'])
+        $stories = Story::with($this->relationships)
             ->orderBy('created_at', 'DESC')
             ->get()
             ->sortByDesc(function($story) {
@@ -109,7 +123,7 @@ class FeedService
      */
     public function getDiscussedFeed(): array
     {
-        $stories = Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user', 'sharedStory.story.user'])
+        $stories = Story::with($this->relationships)
             ->orderBy('created_at', 'DESC')
             ->get()
             ->sortByDesc(function($story) {
@@ -132,7 +146,7 @@ class FeedService
 
         return $user->following()
             ->with(['followingUser.stories' => function($query) {
-                $query->with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user', 'sharedStory.story.user'])
+                $query->with($this->relationships)
                 ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-3 days')))
                 ->orderBy('created_at', 'DESC');
             }])
@@ -153,7 +167,7 @@ class FeedService
     protected function getSecondLayerFeed(array $tags, array $excludeId): array
     {
         //TODO: figure out how to search by tag
-        return Story::with(['tags', 'likes', 'comments.user', 'link', 'photo', 'video', 'user', 'sharedStory.story.user'])
+        return Story::with($this->relationships)
             ->whereHas('tags', function($query) use ($tags) {
                 $query->whereIn('name', $tags);
             })

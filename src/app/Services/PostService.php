@@ -102,8 +102,12 @@ class PostService
         $tags = '';
 
         if ($sharedStory->tags && count($sharedStory->tags) > 0) {
-            foreach ($sharedStory->tags as $tag) {
-                $tags .= $tag->name . ',';
+            foreach ($sharedStory->tags as $key => $tag) {
+                $tags .= $tag->name;
+                
+                if ($key + 1 < count($sharedStory->tags)) {
+                    $tags .= ',';
+                }
             }
         }
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Story;
 
 use App\Http\Controllers\Controller;
 use App\Services\FeedService;
-use Illuminate\Http\Request;
+use App\User;
 use App\Responses\GenericResponse;
 
 class FeedController extends Controller
@@ -35,7 +35,9 @@ class FeedController extends Controller
 
         $stories = $feedService->getFeedByUserId($userId);
 
-        return $response->createSuccessResponse('RETRIEVED_FEED', ['stories' => $stories]);
+        $user = User::with(['followers'])->find($userId);
+
+        return $response->createSuccessResponse('RETRIEVED_FEED', ['stories' => $stories, 'user' => $user]);
     }
 
     public function getPopularFeed(FeedService $feedService, GenericResponse $response)

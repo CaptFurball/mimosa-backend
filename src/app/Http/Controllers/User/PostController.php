@@ -27,12 +27,14 @@ class PostController extends Controller
     {
         if (!$this->validate($request->all(), [
             'body' => 'required|string|max:1000',
-            'tags' => 'string|max:1000'
+            'tags' => 'nullable|string|max:1000'
         ])) {
             return $this->failedValidationResponse;
         }
 
-        $postService->post($request->body, $request->has('tags')? $request->tags: '');
+        $postService->post(
+            $request->body, 
+            $request->has('tags') && !empty($request->tags)? $request->tags: '');
 
         return $response->createSuccessResponse('STORY_POSTED');
     }
@@ -42,12 +44,15 @@ class PostController extends Controller
         if (!$this->validate($request->all(), [
             'body' => 'required|string|max:1000',
             'photo' => 'required|image|max:1024',
-            'tags' => 'string|max:1000'
+            'tags' => 'nullable|string|max:1000'
         ])) {
             return $this->failedValidationResponse;
         }
 
-        $postService->postPhoto($request->body, $request->file('photo'), $request->has('tags')? $request->tags: '');
+        $postService->postPhoto(
+            $request->body, 
+            $request->file('photo'), 
+            $request->has('tags') && !empty($request->tags)? $request->tags: '');
 
         return $response->createSuccessResponse('STORY_POSTED');
     }
@@ -57,7 +62,7 @@ class PostController extends Controller
         if (!$this->validate($request->all(), [
             'body' => 'required|string|max:1000',
             'video' => 'required|file|max:10240',
-            'tags' => 'string|max:1000'
+            'tags' => 'nullable|string|max:1000'
         ])) {
             return $this->failedValidationResponse;
         }
@@ -70,7 +75,10 @@ class PostController extends Controller
             return $response->createRejectedResponse('VIDEO_FORMAT_IS_NOT_SUPPORTED');
         }
 
-        $postService->postVideo($request->body, $request->file('video'), $request->has('tags')? $request->tags: '');
+        $postService->postVideo(
+            $request->body, 
+            $request->file('video'), 
+            $request->has('tags') && !empty($request->tags)? $request->tags: '');
 
         return $response->createSuccessResponse('STORY_POSTED');
     }
@@ -79,13 +87,16 @@ class PostController extends Controller
     {
         if (!$this->validate($request->all(), [
             'body' => 'required|string|max:1000',
-            'tags' => 'string|max:1000',
+            'tags' => 'nullable|string|max:1000',
             'url'  => 'required|url|max:255'
         ])) {
             return $this->failedValidationResponse;
         }
 
-        $postService->postLink($request->body, $request->url, $request->has('tags')? $request->tags: '');
+        $postService->postLink(
+            $request->body, 
+            $request->url, 
+            $request->has('tags') && !empty($request->tags)? $request->tags: '');
 
         return $response->createSuccessResponse('STORY_POSTED');
     }
