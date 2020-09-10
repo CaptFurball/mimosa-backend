@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class FollowerController extends Controller
 {
+    /**
+     * Handles follow user sequence. Request will be rejected if requested user
+     * was already followed to begin with
+     */
     public function follow(GenericResponse $response, $userId)
     {
         if (!$this->validate(['id' => $userId], [
@@ -34,6 +38,10 @@ class FollowerController extends Controller
         return $response->createSuccessResponse('USER_FOLLOWED');
     }
 
+    /**
+     * Handles unfollow user sequence. Request will be rejected if requested user
+     * was not followed to begin with
+     */
     public function unfollow(GenericResponse $response, $userId)
     {
         if (!$this->validate(['id' => $userId], [

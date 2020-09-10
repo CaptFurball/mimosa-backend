@@ -10,6 +10,10 @@ use App\Responses\GenericResponse;
 
 class LoginController extends Controller
 {
+    /**
+     * Handles login request. Upon successful login, an App Activity type will
+     * be triggered by Event and Listener.
+     */
     public function login(Request $request, GenericResponse $response)
     {
         if (!$this->validate($request->all(), [
@@ -28,6 +32,9 @@ class LoginController extends Controller
         }
     }
 
+    /**
+     * Handles logout request.
+     */
     public function logout(GenericResponse $response)
     {
         Auth::logout(); 
