@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
+    /**
+     * Handles registration request
+     */
     public function register(Request $request, GenericResponse $response)
     {
         if (!$this->validate($request->all(), [

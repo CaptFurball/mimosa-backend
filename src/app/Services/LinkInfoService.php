@@ -13,7 +13,12 @@ class LinkInfoService
 
     protected $crawler;
 
-    public function get($url)
+    /**
+     * Creates new crawler instance based on url
+     * 
+     * @param string $url The url of the designated site to be scrape
+     */
+    public function get(string $url)
     {
         $this->url = $url;
 
@@ -27,6 +32,12 @@ class LinkInfoService
         }
     }
 
+    /**
+     * Scrape for title. This method includes strategies as to where 
+     * to look for a title in the site.
+     * 
+     * @return string The title or empty string if not found.
+     */
     protected function getTitle(): string
     {
         $title = $this->filterTag('@name="title"');
@@ -50,6 +61,12 @@ class LinkInfoService
         return ucfirst($title)?: '';
     }
 
+    /**
+     * Scrape for description. This method includes strategies as to where 
+     * to look for a description in the site.
+     * 
+     * @return string The description or empty string if not found.
+     */
     protected function getDescription(): string
     {
         $description = $this->filterTag('@name="description"');
@@ -65,6 +82,13 @@ class LinkInfoService
         return ucfirst($description)?: '';
     }
 
+    /**
+     * Scrape for image url. This method includes strategies as to where 
+     * to look for a image url in the site. If none is found and url ends 
+     * with .png .jpsg .gif or .jpg, will use the url as image url
+     * 
+     * @return string The  or empty string if not found.
+     */
     protected function getImageUrl(): string
     {
         $imageUrl = $this->filterTag('@property="og:image"');
@@ -88,6 +112,14 @@ class LinkInfoService
         return $imageUrl?: '';
     }
 
+    /**
+     * Helper method for crawler to filter
+     * 
+     * @param string $tag The tag to attribute to filter in format @AttrName="Tag"
+     *                    eg: @name="description"
+     * 
+     * @return mixed Returns a string if found otherwise null is given
+     */
     protected function filterTag(string $tag)
     {
         try {
